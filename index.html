@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Interaktif PAI - Kelas X</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-arabic: 'Amiri', serif;
+        }
+        body {
+            font-family: var(--font-main);
+            user-select: none;
+        }
+        .arabic-text {
+            font-family: var(--font-arabic);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.8);
+        }
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Disable text selection specifically for protected items */
+        .no-copy {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- ========================================== -->
+    <!-- SECTION: LOGIN MODAL / VIEW                -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 shadow-2xl border border-emerald-500/20 transform transition-all animate-fade-in">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500 text-white text-2xl font-bold shadow-lg shadow-emerald-500/30 mb-4">
+                    <i class="fa-solid fa-book-quran"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight">PAI & Budi Pekerti</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Kelas X • Semester Ganjil</p>
+            </div>
+
+            <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Nama Lengkap Siswa</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" id="input-nama" required placeholder="Contoh: Ahmad Fauzan" 
+                            class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Asal Sekolah</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-school"></i></span>
+                        <input type="text" id="input-sekolah" required placeholder="Contoh: SMAN 1 Kualifikasi" 
+                            class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">PIN Keamanan (Default: 123456)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="input-pin" required maxlength="6" placeholder="••••••" 
+                            class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium transition-all tracking-widest">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    <span>Mulai Belajar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-xs text-slate-400">
+                <span>Konfigurasi oleh: MS GPAI SMANSAKU</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN APP WRAPPER (HIDDEN UNTIL LOGIN)      -->
+    <!-- ========================================== -->
+    <div id="app-wrapper" class="hidden flex-col min-h-screen">
+        
+        <!-- HEADER -->
+        <header class="sticky top-0 z-40 glass-panel border-b border-slate-200 dark:border-slate-800 px-4 lg:px-8 h-16 flex items-center justify-between transition-colors">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-emerald-600/30">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Media Pembelajaran</h2>
+                        <p class="text-xs font-semibold text-slate-600 dark:text-slate-300 truncate max-w-[150px] sm:max-w-xs">Qs. Al-Maidah/5: 48</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Progress Pill -->
+                <div class="hidden sm:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800">
+                    <i class="fa-solid fa-chart-line text-emerald-500 text-xs"></i>
+                    <span class="text-xs font-bold"><span id="header-progress-val">0</span>% Selesai</span>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors" title="Ganti Tema">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Profile Info & Logout Dropdown Toggle -->
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 transition-colors">
+                        <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs" id="user-initials">S</div>
+                        <span class="text-xs font-semibold hidden md:inline" id="header-username">Siswa</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                    </button>
+
+                    <!-- User Dropdown Menu -->
+                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 glass-panel rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50">
+                        <div class="px-3 py-2 border-b border-slate-200 dark:border-slate-800 mb-1">
+                            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" id="dropdown-name">-</p>
+                            <p class="text-[10px] text-slate-500 truncate" id="dropdown-school">-</p>
+                        </div>
+                        <button onclick="handleLogout()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2 transition-colors">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Keluar (Logout)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT (SIDEBAR + CONTENT) -->
+        <div class="flex-1 flex relative">
+            
+            <!-- SIDEBAR -->
+            <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-72 glass-panel border-r border-slate-200 dark:border-slate-800 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300 pt-16 lg:pt-0">
+                
+                <!-- Sidebar Header / Mobile Close -->
+                <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between lg:hidden">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Menu Navigasi</span>
+                    <button onclick="toggleSidebar()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-1.5" id="nav-links-container">
+                    <!-- Dynamic Nav Items injected via JS -->
+                </div>
+
+                <!-- Sidebar Footer Widget -->
+                <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                    <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3 text-center">
+                        <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Target Belajar</p>
+                        <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mb-2 overflow-hidden">
+                            <div id="sidebar-progress-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-500 font-medium" id="sidebar-progress-text">0 dari 8 Modul Selesai</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- SIDEBAR BACKDROP FOR MOBILE -->
+            <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-20 hidden lg:hidden"></div>
+
+            <!-- CONTENT AREA -->
+            <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+                
+                <!-- BREADCRUMB & WRAPPER -->
+                <div class="max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 flex flex-col">
+                    
+                    <!-- Breadcrumb -->
+                    <nav class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-6">
+                        <a href="#" onclick="switchSection('beranda'); return false;" class="hover:text-emerald-500 transition-colors">
+                            <i class="fa-solid fa-house"></i> Beranda
+                        </a>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                        <span id="breadcrumb-current" class="text-emerald-600 dark:text-emerald-400 font-bold">Beranda</span>
+                    </nav>
+
+                    <!-- DYNAMIC VIEWS CONTAINER -->
+                    <div id="view-container" class="flex-1 flex flex-col">
+                        <!-- Content injected via JS -->
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="glass-panel border-t border-slate-200 dark:border-slate-800 py-4 px-6 text-center text-xs text-slate-500 dark:text-slate-400 mt-auto">
+                    <p>Media Pembelajaran Interaktif PAI & Budi Pekerti Kelas X &bull; Dibuat oleh MS GPAI SMANSAKU</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <button id="scrollToTopBtn" onclick="scrollToTop()" class="fixed bottom-6 right-6 z-30 w-12 h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ========================================== -->
+    <!-- AUDIO ELEMENTS (WEB AUDIO API / AUDIO TAGS)-->
+    <!-- ========================================== -->
+    <script>
+        // Synthesized sound generator using Web Audio API to ensure zero external file dependency errors
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'incorrect') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(150, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+    </script>
+
+    <!-- ========================================== -->
+    <!-- MAIN JAVASCRIPT APPLICATION LOGIC          -->
+    <!-- ========================================== -->
+    <script>
+        // --- APP STATE & CONFIGURATION ---
+        const CONFIG = {
+            appName: "Media Pembelajaran Interaktif PAI dan Budi Pekerti Kelas X",
+            theme: "Muhammad Sholeh",
+            mapel: "PAI dan Budi Pekerti",
+            kelas: "X",
+            semester: "Ganjil",
+            materi: "Qs. Al-Maidah/5: 48 tentang kompetisi dalam kebaikan, serta hadis terkait",
+            secretPin: "123456",
+            penyusun: "MS GPAI SMANSAKU"
+        };
+
+        let state = {
+            currentUser: null,
+            currentSection: 'beranda',
+            completedSections: [],
+            darkMode: false,
+            gameScore: 0,
+            exerciseScore: null,
+            evaluationScore: null
+        };
+
+        // Navigation Sections Definition
+        const SECTIONS = [
+            { id: 'beranda', title: 'Beranda', icon: 'fa-house', desc: 'Halaman utama media pembelajaran' },
+            { id: 'petunjuk', title: 'Petunjuk', icon: 'fa-circle-info', desc: 'Panduan penggunaan aplikasi' },
+            { id: 'materi', title: 'Materi Interaktif', icon: 'fa-book-open-reader', desc: 'Qs. Al-Maidah/5: 48 & Hadis Terkait' },
+            { id: 'game', title: 'Game Edukasi', icon: 'fa-gamepad', desc: 'Kuis interaktif tipe Quizizz' },
+            { id: 'latihan', title: 'Latihan Soal', icon: 'fa-pen-to-square', desc: 'Latihan pilihan ganda & HOTS' },
+            { id: 'evaluasi', title: 'Evaluasi Akhir', icon: 'fa-clipboard-check', desc: 'Ujian kompetensi bab' },
+            { id: 'ringkasan', title: 'Ringkasan', icon: 'fa-list-check', desc: 'Kesimpulan materi pembelajaran' },
+            { id: 'referensi', title: 'Referensi', icon: 'fa-bookmark', desc: 'Daftar pustaka & sumber belajar' },
+            { id: 'profil', title: 'Profil Penyusun', icon: 'fa-id-badge', desc: 'Informasi pengembang media' }
+        ];
+
+        // --- LOCAL STORAGE HANDLING ---
+        function loadUserData() {
+            const saved = localStorage.getItem('pai_app_session');
+            if (saved) {
+                try {
+                    state.currentUser = JSON.parse(saved);
+                    loadProgress();
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function saveUserSession() {
+            if (state.currentUser) {
+                localStorage.setItem('pai_app_session', JSON.stringify(state.currentUser));
+            }
+        }
+
+        function loadProgress() {
+            const prog = localStorage.getItem('pai_app_progress_' + (state.currentUser ? state.currentUser.nama : 'guest'));
+            if (prog) {
+                try {
+                    state.completedSections = JSON.parse(prog);
+                } catch(e) {
+                    state.completedSections = [];
+                }
+            }
+        }
+
+        function saveProgress() {
+            if (state.currentUser) {
+                localStorage.setItem('pai_app_progress_' + state.currentUser.nama, JSON.stringify(state.completedSections));
+            }
+        }
+
+        function markSectionCompleted(sectionId) {
+            if (!state.completedSections.includes(sectionId)) {
+                state.completedSections.push(sectionId);
+                saveProgress();
+                updateProgressUI();
+                showToast(`Modul "${SECTIONS.find(s => s.id === sectionId)?.title}" selesai dipelajari!`, 'success');
+            }
+        }
+
+        function updateProgressUI() {
+            const total = SECTIONS.length;
+            const completed = state.completedSections.length;
+            const percentage = Math.round((completed / total) * 100);
+
+            document.getElementById('header-progress-val').innerText = percentage;
+            document.getElementById('sidebar-progress-bar').style.width = percentage + '%';
+            document.getElementById('sidebar-progress-text').innerText = `${completed} dari ${total} Modul Selesai`;
+        }
+
+        // --- AUTHENTICATION ---
+        function handleLogin(e) {
+            e.preventDefault();
+            playSound('click');
+            const nama = document.getElementById('input-nama').value.trim();
+            const sekolah = document.getElementById('input-sekolah').value.trim();
+            const pin = document.getElementById('input-pin').value.trim();
+
+            if (pin !== CONFIG.secretPin) {
+                showToast('PIN Keamanan salah! Gunakan pin standard: 123456', 'error');
+                return;
+            }
+
+            state.currentUser = { nama, sekolah };
+            saveUserSession();
+            loadProgress();
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-wrapper').classList.remove('hidden');
+            document.getElementById('app-wrapper').classList.add('flex');
+
+            // Set UI headers
+            document.getElementById('header-username').innerText = nama;
+            document.getElementById('dropdown-name').innerText = nama;
+            document.getElementById('dropdown-school').innerText = sekolah;
+            document.getElementById('user-initials').innerText = nama.charAt(0).toUpperCase();
+
+            initNavigation();
+            switchSection('beranda');
+            showToast(`Selamat datang, ${nama}!`, 'success');
+        }
+
+        function handleLogout() {
+            playSound('click');
+            localStorage.removeItem('pai_app_session');
+            state.currentUser = null;
+            state.completedSections = [];
+            
+            document.getElementById('user-menu').classList.add('hidden');
+            document.getElementById('app-wrapper').classList.add('hidden');
+            document.getElementById('app-wrapper').classList.remove('flex');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            showToast('Berhasil keluar dari sesi.', 'info');
+        }
+
+        function toggleUserMenu() {
+            playSound('click');
+            const menu = document.getElementById('user-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- NAVIGATION & UI RENDERING ---
+        function initNavigation() {
+            const container = document.getElementById('nav-links-container');
+            container.innerHTML = '';
+
+            SECTIONS.forEach(sec => {
+                const isCompleted = state.completedSections.includes(sec.id);
+                const isActive = state.currentSection === sec.id;
+
+                const btn = document.createElement('button');
+                btn.id = `nav-${sec.id}`;
+                btn.onclick = () => { switchSection(sec.id); };
+                btn.className = `w-full text-left px-4 py-3 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all group ${
+                    isActive 
+                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30' 
+                        : 'hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300'
+                }`;
+
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm transition-colors ${
+                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-900 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white'
+                        }">
+                            <i class="fa-solid ${sec.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">${sec.title}</p>
+                            <p class="text-[10px] opacity-75 truncate max-w-[130px]">${sec.desc}</p>
+                        </div>
+                    </div>
+                    ${isCompleted ? '<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>' : ''}
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function switchSection(sectionId) {
+            playSound('click');
+            state.currentSection = sectionId;
+            
+            // Close mobile sidebar if open
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-backdrop').classList.add('hidden');
+            document.getElementById('user-menu').classList.add('hidden');
+
+            // Update Nav active classes
+            SECTIONS.forEach(sec => {
+                const btn = document.getElementById(`nav-${sec.id}`);
+                if (btn) {
+                    if (sec.id === sectionId) {
+                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-600/30";
+                    } else {
+                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-300";
+                    }
+                }
+            });
+
+            // Update Breadcrumb
+            const currentSecObj = SECTIONS.find(s => s.id === sectionId);
+            document.getElementById('breadcrumb-current').innerText = currentSecObj ? currentSecObj.title : '';
+
+            // Render view content
+            renderView(sectionId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleSidebar() {
+            playSound('click');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleTheme() {
+            playSound('click');
+            state.darkMode = !state.darkMode;
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+
+            if (state.darkMode) {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                icon.className = "fa-solid fa-sun";
+            } else {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.className = "fa-solid fa-moon";
+            }
+        }
+
+        // --- VIEWS RENDERER ---
+        function renderView(sectionId) {
+            const container = document.getElementById('view-container');
+            container.innerHTML = '';
+
+            switch(sectionId) {
+                case 'beranda':
+                    container.innerHTML = renderBerandaView();
+                    break;
+                case 'petunjuk':
+                    container.innerHTML = renderPetunjukView();
+                    break;
+                case 'materi':
+                    container.innerHTML = renderMateriView();
+                    break;
+                case 'game':
+                    container.innerHTML = renderGameView();
+                    initGameEngine();
+                    break;
+                case 'latihan':
+                    container.innerHTML = renderLatihanView();
+                    initLatihanEngine();
+                    break;
+                case 'evaluasi':
+                    container.innerHTML = renderEvaluasiView();
+                    initEvaluasiEngine();
+                    break;
+                case 'ringkasan':
+                    container.innerHTML = renderRingkasanView();
+                    break;
+                case 'referensi':
+                    container.innerHTML = renderReferensiView();
+                    break;
+                case 'profil':
+                    container.innerHTML = renderProfilView();
+                    break;
+                default:
+                    container.innerHTML = `<div class="p-8 text-center">Modul belum tersedia.</div>`;
+            }
+
+            // Automatically mark section completed after view is rendered
+            markSectionCompleted(sectionId);
+        }
+
+        // --- VIEW 1: BERANDA ---
+        function renderBerandaView() {
+            return `
+                <div class="space-y-6 animate-fade-in">
+                    <!-- Hero Banner -->
+                    <div class="glass-panel rounded-3xl p-6 sm:p-10 border border-emerald-500/20 relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/10">
+                        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10 max-w-2xl">
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Pendidikan Agama Islam</span>
+                            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3 mb-4">Qs. Al-Maidah/5: 48: Kompetisi dalam Kebaikan</h1>
+                            <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                                Selamat datang, <strong class="text-emerald-600 dark:text-emerald-400">${state.currentUser ? state.currentUser.nama : 'Siswa'}</strong>! Pelajari materi dasar, hukum tajwid, hadis terkait, serta uji pemahamanmu melalui game interaktif, latihan soal, dan evaluasi.
+                            </p>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="switchSection('materi')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-book-open"></i> Mulai Belajar
+                                </button>
+                                <button onclick="switchSection('game')" class="px-6 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-gamepad text-emerald-500"></i> Mainkan Game
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Info Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Kelas / Semester</p>
+                                <p class="text-sm font-bold">Kelas X • Ganjil</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Penyusun</p>
+                                <p class="text-sm font-bold">MS GPAI SMANSAKU</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl font-bold">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Keamanan Sesi</p>
+                                <p class="text-sm font-bold">Terproteksi PIN</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 2: PETUNJUK ---
+        function renderPetunjukView() {
+            return `
+                <div class="space-y-6 animate-fade-in">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-circle-info text-emerald-500"></i>
+                            <span>Petunjuk Penggunaan Media Pembelajaran</span>
+                        </h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                            Ikuti langkah-langkah berikut agar proses pembelajaran berjalan dengan optimal dan efektif:
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="flex gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
+                                <div>
+                                    <h3 class="text-sm font-bold mb-1">Eksplorasi Materi Interaktif</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Pelajari bacaan Qs. Al-Maidah/5: 48, hukum tajwid, terjemahan, dan hadis terkait dengan teliti.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">2</div>
+                                <div>
+                                    <h3 class="text-sm font-bold mb-1">Mainkan Game Edukasi (Quizizz Style)</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Selesaikan 10 soal game interaktif dengan batas waktu 1 menit per soal. Soal diproteksi dari copy-paste.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">3</div>
+                                <div>
+                                    <h3 class="text-sm font-bold mb-1">Kerjakan Latihan & Evaluasi</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Kerjakan 5 soal biasa dan 5 soal HOTS pada menu Latihan dan Evaluasi untuk mengukur penguasaan materi.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 3: MATERI INTERAKTIF ---
+        function renderMateriView() {
+            return `
+                <div class="space-y-6 animate-fade-in no-copy">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Materi Pembelajaran</span>
+                        <h2 class="text-2xl font-extrabold mt-3 mb-6">Qs. Al-Maidah/5: 48 Tentang Kompetisi dalam Kebaikan</h2>
+
+                        <!-- Ayat Section -->
+                        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-6">
+                            <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-3 uppercase tracking-wider">Bacaan Ayat & Terjemahan</p>
+                            <p class="arabic-text text-2xl sm:text-3xl text-right leading-loose mb-6 font-bold text-slate-900 dark:text-slate-100">
+                                وَأَنْزَلْنَا إِلَيْكَ الْكِتَابَ بِالْحَقِّ مُصَدِّقًا لِمَا بَيْنَ يَدَيْهِ مِنَ الْكِتَابِ وَمُهَيْمِنًا عَلَيْهِ فَاحْكُم بَيْنَهُم بِمَا أَنزَلَ اللَّهُ وَلَا تَتَّبِعْ أَهْوَاءَهُمْ عَمَّا جَاءَكَ مِنَ الْحَقِّ لِكُلٍّ جَعَلْنَا مِنْكُمْ شِرْعَةً وَمِنْهَاجًا وَلَوْ شَاءَ اللَّهُ لَجَعَلَكُمْ أُمَّةً وَاحِدَةً وَلَٰكِنْ لِيَبْلُوَكُمْ فِي مَا آتَاكُمْ فَاسْتَبِقُوا الْخَيْرَاتِ إِلَى اللَّهِ مَرْجِعُكُمْ جَمِيعًا فَيُنَبِّئُكُمْ بِمَا كُنْتُمْ فِيهِ تَخْتَلِفُونَ
+                            </p>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 italic leading-relaxed">
+                                "Dan Kami telah menurunkan Kitab (Al-Qur'an) kepada mu (Muhammad) dengan membawa kebenaran, yang membenarkan kitab-kitab yang menurunkan sebelumnya dan sebagai mukjizat (pengawas) terhadap kitab-kitab yang lain... maka berlomba-lombalah kamu dalam kebaikan. Hanya kepada Allah kamu semua kembali, lalu dikabarkan-Nya kepadamu apa yang dahulu kamu perselisihkan." (QS. Al-Maidah: 48)
+                            </p>
+                        </div>
+
+                        <!-- Kandungan & Tajwid Tabs/Sections -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <h3 class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check"></i> Kandungan Utama Ayat
+                                </h3>
+                                <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+                                    <li>Al-Qur'an adalah kitab suci yang hak dan menyempurnakan kitab-kitab sebelumnya.</li>
+                                    <li>Perintah untuk berlomba-lomba dalam kebaikan (Al-Istibaq fi al-khairat).</li>
+                                    <li>Keragaman syariat umat manusia adalah bentuk ujian dari Allah SWT.</li>
+                                    <li>Semua manusia kelak akan kembali kepada Allah SWT untuk mempertanggungjawabkan perbuatannya.</li>
+                                </ul>
+                            </div>
+
+                            <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <h3 class="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-bookmark"></i> Hadis Terkait
+                                </h3>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic">
+                                    Rasulullah SAW bersabda: "Bergeraklah kamu sekalian untuk berbuat kebajikan sebelum datangnya fitnah (cobaan) yang datang bagaikan potongan malam yang gelap gelita..." (HR. Muslim). Hadis ini menegaskan pentingnya inisiatif cepat dalam melakukan amal saleh.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 4: GAME (QUIZIZZ STYLE) ---
+        const GAME_QUESTIONS = [
+            { q: "Apa arti dari potongan ayat فَاسْتَبِقُوا الْخَيْرَاتِ?", opts: ["Maka berlomba-lombalah dalam kebaikan", "Dan janganlah kamu berpecah belah", "Allah Maha Mengetahui amal kalian", "Kembalilah kepada Allah"], ans: 0 },
+            { q: "Kitab Al-Qur'an berfungsi sebagai pengawas terhadap kitab-kitab sebelumnya. Istilah pengawas dalam ayat adalah...", opts: ["Muhaiminan", "Mushaddiqan", "Syi'ratan", "Minhajan"], ans: 0 },
+            { q: "Mengapa Allah SWT menciptakan keragaman syariat bagi setiap umat?", opts: ["Agar saling bermusuhan", "Untuk menguji manusia dalam berbuat taat", "Supaya manusia kebingungan", "Agar tercipta kasta sosial"], ans: 1 },
+            { q: "Sikap seorang Muslim ketika melihat orang lain berbuat kebaikan adalah...", opts: ["Iri dan dengki", "Berdiam diri saja", "Berkompetisi secara sehat (Fastabiqul khairat)", "Mencari-cari kelemahannya"], ans: 2 },
+            { q: "Hadis yang menganjurkan segera beramal saleh sebelum datang fitnah diriwayatkan oleh...", opts: ["HR. Bukhari", "HR. Muslim", "HR. Tirmidzi", "HR. Abu Daud"], ans: 1 },
+            { q: "Hukum bacaan Nun Sukun bertemu huruf Huruf Ba' pada kalimat مِنْ بَعْدِ adalah...", opts: ["Iqlab", "Idgham Bighunnah", "Ikhfa Haqiqi", "Izhar Halqi"], ans: 0 },
+            { q: "Perilaku kompetisi dalam kebaikan (fastabiqul khairat) dapat diterapkan di sekolah melalui...", opts: ["Berlomba mendapat nilai tertinggi dengan cara curang", "Berlomba meraih prestasi akademik dan akhlak mulia", "Acuh tak acuh pada tugas kelompok", "Menyontek saat ujian"], ans: 1 },
+            { q: "Kata شِرْعَةً (Syir'atan) dalam Qs. Al-Maidah ayat 48 memiliki arti...", opts: ["Jalan yang terang", "Aturan atau jalan", "Petunjuk utama", "Cahaya kemenangan"], ans: 1 },
+            { q: "Keimanan kepada Al-Qur'an menuntut seorang Muslim untuk menjadikan Al-Qur'an sebagai...", opts: ["Pajangan rumah", "Bacaan saat sunyi saja", "Pedoman hidup utama", "Warisan budaya"], ans: 2 },
+            { q: "Tempat kembali seluruh manusia kelak untuk menerima balasan amal adalah...", opts: ["Dunia", "Akhirat / Kepada Allah", "Padang mahsyar semata", "Kehidupan masa depan"], ans: 1 }
+        ];
+
+        let gameIndex = 0;
+        let gameTimer = null;
+        let gameTimeLeft = 60;
+        let gameActiveScore = 0;
+
+        function renderGameView() {
+            return `
+                <div class="space-y-6 animate-fade-in no-copy">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Game Edukasi (Quizizz Style)</span>
+                                <h2 class="text-xl font-bold mt-2">Tantangan Cepat Kompetisi Kebaikan</h2>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-500 font-semibold">Skor</span>
+                                <p class="text-xl font-extrabold text-emerald-600" id="game-score-display">0</p>
+                            </div>
+                        </div>
+
+                        <div id="game-quiz-area">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initGameEngine() {
+            gameIndex = 0;
+            gameActiveScore = 0;
+            renderGameQuestion();
+        }
+
+        function renderGameQuestion() {
+            if (gameIndex >= GAME_QUESTIONS.length) {
+                renderGameResult();
+                return;
+            }
+
+            const qObj = GAME_QUESTIONS[gameIndex];
+            gameTimeLeft = 60;
+            clearInterval(gameTimer);
+
+            const area = document.getElementById('game-quiz-area');
+            area.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold text-slate-500">Soal ${gameIndex + 1} dari ${GAME_QUESTIONS.length}</span>
+                    <div class="flex items-center gap-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-bold">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="game-timer">${gameTimeLeft}s</span>
+                    </div>
+                </div>
+
+                <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mb-6 overflow-hidden">
+                    <div id="game-progress-bar" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-1000" style="width: 100%"></div>
+                </div>
+
+                <p class="text-base sm:text-lg font-bold mb-6">${qObj.q}</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="game-options">
+                    ${qObj.opts.map((opt, i) => `
+                        <button onclick="handleGameAnswer(${i})" class="text-left p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 hover:bg-emerald-500 hover:text-white border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-semibold transition-all shadow-sm">
+                            <span class="inline-block w-6 h-6 rounded-lg bg-white/20 text-center leading-6 mr-2 font-bold">${String.fromCharCode(65 + i)}</span>
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            // Start Timer
+            gameTimer = setInterval(() => {
+                gameTimeLeft--;
+                const timerEl = document.getElementById('game-timer');
+                const progBar = document.getElementById('game-progress-bar');
+                if (timerEl) timerEl.innerText = gameTimeLeft + 's';
+                if (progBar) progBar.style.width = (gameTimeLeft / 60 * 100) + '%';
+
+                if (gameTimeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    handleGameAnswer(-1); // Timeout
+                }
+            }, 1000);
+        }
+
+        function handleGameAnswer(selectedIndex) {
+            clearInterval(gameTimer);
+            playSound('click');
+
+            const qObj = GAME_QUESTIONS[gameIndex];
+            const isCorrect = selectedIndex === qObj.ans;
+
+            if (isCorrect) {
+                gameActiveScore += 10;
+                playSound('correct');
+                showToast('Jawaban Benar!', 'success');
+            } else {
+                playSound('incorrect');
+                showToast('Jawaban Kurang Tepat!', 'error');
+            }
+
+            document.getElementById('game-score-display').innerText = gameActiveScore;
+            gameIndex++;
+            setTimeout(() => {
+                renderGameQuestion();
+            }, 1000);
+        }
+
+        function renderGameResult() {
+            state.gameScore = gameActiveScore;
+            if (gameActiveScore >= 70) {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+
+            const area = document.getElementById('game-quiz-area');
+            area.innerHTML = `
+                <div class="text-center py-8 space-y-4">
+                    <div class="w-20 h-20 rounded-3xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl font-bold mx-auto">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-extrabold">Permainan Selesai!</h3>
+                    <p class="text-sm text-slate-500">Skor total game kamu:</p>
+                    <p class="text-4xl font-black text-emerald-600">${gameActiveScore} / 100</p>
+                    <button onclick="initGameEngine()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 transition-all">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Mainkan Lagi
+                    </button>
+                </div>
+            `;
+        }
+
+        // --- VIEW 5: LATIHAN SOAL ---
+        const LATIHAN_QUESTIONS = [
+            { q: "Apa makna utama dari konsep 'Fastabiqul Khairat' dalam Qs. Al-Maidah/5: 48?", opts: ["Berlomba mencari harta benda dunia", "Berkompetisi secara sehat dalam ketaatan dan amal saleh", "Bersaing memperebutkan kekuasaan politik", "Berlomba dalam bidang olahraga prestasi"], ans: 1, type: "Biasa" },
+            { q: "Kalimat 'Mussaddiqan lima baina yaihi' bermakna bahwa Al-Qur'an berfungsi sebagai...", opts: ["Pemberi peringatan bagi orang zalim", "Pembenar kitab-kitab suci sebelumnya", "Penghapus seluruh hukum terdahulu", "Penjelas kisah umat masa lalu"], ans: 1, type: "Biasa" },
+            { q: "Manakah di bawah ini yang merupakan contoh penerapan sikap kompetisi dalam kebaikan di lingkungan madrasah/sekolah?", opts: ["Menyembunyikan catatan agar teman tidak bisa belajar", "Berlomba meraih prestasi belajar dan aktif dalam kegiatan sosial", "Hanya belajar saat akan ujian saja", "Acuh tak acuh terhadap kebersihan kelas"], ans: 1, type: "Biasa" },
+            { q: "Mengapa Allah SWT menghendaki adanya perbedaan syariat di antara umat manusia?", opts: ["Agar manusia saling berselisih paham", "Sebagai sarana ujian bagi manusia untuk membuktikan siapa yang terbaik amalnya", "Supaya tercipta perpecahan golongan", "Untuk mempermudah manusia melanggar aturan"], ans: 1, type: "Biasa" },
+            { q: "Apa arti dari potongan ayat 'Fa-inba'ukum bima kuntum fihi tahtalifun'?", opts: ["Maka Allah akan memberitahukan kepadamu apa yang dahulu kamu perselisihkan", "Maka Allah akan mengampuni dosa-dosa kalian", "Dan kembalilah kamu kepada kehidupan dunia", "Maka berlomba-lombalah dalam kebaikan"], ans: 0, type: "Biasa" },
+            { q: "Dalam konteks global yang majemuk, pemahaman terhadap Qs. Al-Maidah/5: 48 mengajarkan umat Islam untuk...", opts: ["Menutup diri dari pergaulan antarumat beragama", "Menjalin kerja sama dalam kebaikan dan kebajikan sosial (Al-Birr)", "Memaksakan kehendak golongan kepada pihak lain", "Mengabaikan nilai-nilai toleransi beragama"], ans: 1, type: "HOTS" },
+            { q: "Bagaimana korelasi antara keimanan kepada kitab Allah dan semangat fastabiqul khairat dalam kehidupan sehari-hari?", opts: ["Keimanan hanya sebatas keyakinan hati tanpa implementasi amal", "Semangat berkompetisi lahir dari kesadaran iman yang mendalam terhadap petunjuk kitab suci", "Kitab suci tidak memiliki korelasi dengan motivasi kerja sosial", "Kompetisi dalam kebaikan dapat dilakukan tanpa landasan iman"], ans: 1, type: "HOTS" },
+            { q: "Jika seseorang mendapati kelompok lain berbeda pandangan dalam urusan furu'iyah, sikap yang paling tepat sesuai semangat ayat adalah...", opts: ["Mencela dan menyesatkan kelompok tersebut", "Menjadikannya alasan untuk memutuskan silaturahim", "Tetap berlomba dalam kebajikan universal dan menghormati perbedaan", "Memusuhi secara terbuka di ruang publik"], ans: 2, type: "HOTS" },
+            { q: "Analisis makna 'Muhaiminan' dalam ayat 48 menunjukkan posisi Al-Qur'an terhadap kitab terdahulu sebagai...", opts: ["Pengganti total yang menghapus sejarah", "Batu ujian, pengawas, dan pemelihara kebenaran otentik", "Kitab tambahan penunjang sejarah", "Kumpulan puisi keagamaan"], ans: 1, type: "HOTS" },
+            { q: "Implikasi dari keyakinan bahwa seluruh manusia akan kembali kepada Allah adalah...", opts: ["Mengabaikan tanggung jawab sosial di dunia", "Mendorong seseorang untuk senantiasa berhati-hati dan produktif beramal saleh", "Bersikap pasrah tanpa ikhtiar maksimal", "Menyerahkan seluruh urusan kepada nasib"], ans: 1, type: "HOTS" }
+        ];
+
+        function renderLatihanView() {
+            return `
+                <div class="space-y-6 animate-fade-in no-copy">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Latihan Soal</span>
+                        <h2 class="text-2xl font-extrabold mt-2 mb-6">Uji Pemahaman: 5 Soal Biasa & 5 Soal HOTS</h2>
+                        <div id="latihan-container" class="space-y-6"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initLatihanEngine() {
+            const container = document.getElementById('latihan-container');
+            container.innerHTML = LATIHAN_QUESTIONS.map((item, idx) => `
+                <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Soal ${idx + 1} (${item.type})</span>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800 dark:text-slate-100">${item.q}</p>
+                    <div class="grid grid-cols-1 gap-2" id="latihan-opts-${idx}">
+                        ${item.opts.map((opt, i) => `
+                            <label class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-emerald-500 transition-colors text-xs font-semibold">
+                                <input type="radio" name="lat_${idx}" value="${i}" class="text-emerald-600 focus:ring-emerald-500">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('') + `
+                <button onclick="submitLatihan()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Selesaikan Latihan
+                </button>
+            `;
+        }
+
+        function submitLatihan() {
+            playSound('click');
+            let score = 0;
+            LATIHAN_QUESTIONS.forEach((item, idx) => {
+                const radios = document.getElementsByName(`lat_${idx}`);
+                for (let r of radios) {
+                    if (r.checked && parseInt(r.value) === item.ans) {
+                        score += 10;
+                    }
+                }
+            });
+
+            state.exerciseScore = score;
+            if (score >= 70) confetti({ particleCount: 80, spread: 60 });
+            showToast(`Latihan Selesai! Skor Anda: ${score} / 100`, score >= 70 ? 'success' : 'info');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- VIEW 6: EVALUASI AKHIR ---
+        function renderEvaluasiView() {
+            return `
+                <div class="space-y-6 animate-fade-in no-copy">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Evaluasi Akhir</span>
+                        <h2 class="text-2xl font-extrabold mt-2 mb-6">Ujian Kompetensi Bab (5 Soal Biasa & 5 Soal HOTS)</h2>
+                        <div id="evaluasi-container" class="space-y-6"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initEvaluasiEngine() {
+            // Using similar high-standard questions for evaluation
+            const container = document.getElementById('evaluasi-container');
+            container.innerHTML = LATIHAN_QUESTIONS.map((item, idx) => `
+                <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Evaluasi ${idx + 1} (${item.type})</span>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800 dark:text-slate-100">${item.q}</p>
+                    <div class="grid grid-cols-1 gap-2" id="eval-opts-${idx}">
+                        ${item.opts.map((opt, i) => `
+                            <label class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-emerald-500 transition-colors text-xs font-semibold">
+                                <input type="radio" name="eval_${idx}" value="${i}" class="text-emerald-600 focus:ring-emerald-500">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('') + `
+                <button onclick="submitEvaluasi()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-square-check"></i> Kirim Jawaban Evaluasi
+                </button>
+            `;
+        }
+
+        function submitEvaluasi() {
+            playSound('click');
+            let score = 0;
+            LATIHAN_QUESTIONS.forEach((item, idx) => {
+                const radios = document.getElementsByName(`eval_${idx}`);
+                for (let r of radios) {
+                    if (r.checked && parseInt(r.value) === item.ans) {
+                        score += 10;
+                    }
+                }
+            });
+
+            state.evaluationScore = score;
+            if (score >= 70) {
+                confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
+            }
+            showToast(`Evaluasi Selesai! Skor Anda: ${score} / 100`, score >= 70 ? 'success' : 'info');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- VIEW 7: RINGKASAN ---
+        function renderRingkasanView() {
+            return `
+                <div class="space-y-6 animate-fade-in">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Ringkasan Materi</span>
+                        <h2 class="text-2xl font-extrabold mt-2 mb-6">Poin Penting Pembelajaran</h2>
+
+                        <div class="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <h3 class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">1. Kedudukan Al-Qur'an</h3>
+                                <p>Al-Qur'an diturunkan sebagai kitab suci penutup yang membenarkan kitab-kitab sebelumnya serta menjadi pengawas (muhaimin) atas keotentikannya.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <h3 class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">2. Konsep Fastabiqul Khairat</h3>
+                                <p>Umat Islam diperintahkan untuk berlomba-lomba dalam kebaikan, bukan dalam kemaksiatan atau permusuhan, sebagai wujud ketaatan kepada Allah SWT.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <h3 class="font-bold text-emerald-600 dark:text-emerald-400 mb-1">3. Pertanggungjawaban Akhirat</h3>
+                                <p>Segala perbedaan pandangan dan amal perbuatan di dunia akan diadili dan dijelaskan oleh Allah SWT kelak di hari kiamat.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 8: REFERENSI ---
+        function renderReferensiView() {
+            return `
+                <div class="space-y-6 animate-fade-in">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">Referensi & Daftar Pustaka</span>
+                        <h2 class="text-2xl font-extrabold mt-2 mb-6">Sumber Belajar Terpercaya</h2>
+
+                        <ul class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside leading-relaxed">
+                            <li>Kementerian Agama RI. (2021). <em>Al-Qur'an dan Terjemahannya</em>. Jakarta: Kemenag RI.</li>
+                            <li>Buku Siswa Pendidikan Agama Islam dan Budi Pekerti Kelas X SMA/SMK. Jakarta: Kemendikbudristek.</li>
+                            <li>Shihab, M. Quraish. (2002). <em>Tafsir Al-Misbah: Pesan, Kesan, dan Keserasian Al-Qur'an</em>. Jakarta: Lentera Hati.</li>
+                            <li>Syarah Hadis Arbain dan Kitab Shahih Muslim terkait motivasi beramal saleh.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 9: PROFIL PENYUSUN ---
+        function renderProfilView() {
+            return `
+                <div class="space-y-6 animate-fade-in">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 text-center max-w-xl mx-auto">
+                        <div class="w-24 h-24 rounded-3xl bg-emerald-600 text-white flex items-center justify-center text-4xl font-bold shadow-xl shadow-emerald-600/30 mx-auto mb-4">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <h2 class="text-2xl font-extrabold">${CONFIG.theme}</h2>
+                        <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 uppercase tracking-wider">Guru Pendidikan Agama Islam (GPAI)</p>
+                        <p class="text-xs text-slate-500 mt-2">Identitas Pengembang: ${CONFIG.penyusun}</p>
+
+                        <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 text-left space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                            <p><strong>Aplikasi:</strong> ${CONFIG.appName}</p>
+                            <p><strong>Mata Pelajaran:</strong> ${CONFIG.mapel} Kelas ${CONFIG.kelas} Semester ${CONFIG.semester}</p>
+                            <p><strong>Topik:</strong> ${CONFIG.materi}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- UTILITY: TOAST NOTIFICATIONS & SCROLL ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-slate-900 text-white';
+            let icon = 'fa-circle-info text-sky-400';
+            if (type === 'success') {
+                bgClass = 'bg-emerald-600 text-white';
+                icon = 'fa-circle-check text-white';
+            } else if (type === 'error') {
+                bgClass = 'bg-rose-600 text-white';
+                icon = 'fa-triangle-exclamation text-white';
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-xs font-bold ${bgClass} transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onscroll = function() {
+            const btn = document.getElementById('scrollToTopBtn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            } else {
+                btn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }
+        };
+
+        function scrollToTop() {
+            playSound('click');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize App Session check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (loadUserData()) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-wrapper').classList.remove('hidden');
+                document.getElementById('app-wrapper').classList.add('flex');
+                document.getElementById('header-username').innerText = state.currentUser.nama;
+                document.getElementById('dropdown-name').innerText = state.currentUser.nama;
+                document.getElementById('dropdown-school').innerText = state.currentUser.sekolah;
+                document.getElementById('user-initials').innerText = state.currentUser.nama.charAt(0).toUpperCase();
+                initNavigation();
+                switchSection('beranda');
+            }
+        });
+    </script>
+</body>
+</html>
